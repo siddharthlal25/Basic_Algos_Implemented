@@ -1,0 +1,107 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define INF 214748364
+
+typedef struct node
+{
+    int index;
+    int weight;
+}node;
+
+void swap(node *a,node *b)
+{
+	node temp=*a;
+	*a=*b;
+	*b=temp;
+}
+
+void heapify(node arr[],int i,int size)
+{
+	int left=2*i,right=2*i+1;
+	int min=i;
+	if(left<=size && arr[left-1].weight<arr[i-1].weight) min=left;
+	if(right<=size && arr[right-1].weight<arr[min-1].weight) min=right;
+
+	if(min!=i)
+	{
+		swap(&arr[min-1],&arr[i-1]);
+		heapify(arr,min,size);
+	}
+}
+
+void build_min_heap(node arr[],int size)
+{
+	int i;
+	for(i=size/2;i>=1;i--) heapify(arr,i,size);
+}
+
+int main()
+{
+    int nodes,edges;
+    printf("Enter number of vertices in graph:");
+    scanf("%d",&nodes);
+    printf("Enter the number of edges in graph:");
+    scanf("%d",&edges);
+    printf("\n\n***Nodes are numbered from 0 to %d***\n\n",nodes-1);
+    int i,j,adj[nodes][nodes];
+    //initializing adjacency list to zero
+    for(i=0;i<nodes;i++)
+        for(j=0;j<nodes;j++)
+            adj[i][j]=0;
+
+    //generating the adjacency list
+    int w,v1,v2;
+    for(i=0;i<edges;i++)
+    {
+        printf("Enter first vertex of the edge in graph:");
+        scanf("%d",&v1);
+        printf("Enter second vertex of the edge in graph:");
+        scanf("%d",&v2);
+        printf("Enter the weight of edge:");
+        scanf("%d",&w);
+        adj[v1][v2]=w;
+        adj[v2][v1]=w;
+
+
+    }
+    int node_parent[nodes];
+
+    node vertices[nodes];
+    for(i=0;i<nodes;i++)
+    {
+        vertices[i].index=i;
+        vertices[i].weight=INF;
+    }
+    //taking vertex 0 as root and assigning its parent as -1 and weight as 0
+    node_parent[0]=-1;
+    vertices[0].weight=0;
+
+    int edge_count;
+    int size=nodes;
+
+
+    for(edge_count=0;edge_count<nodes-1;edge_count++)
+    {
+        build_min_heap(vertices+edge_count,size);
+        int min=vertices[edge_count].index;
+
+        for(i=edge_count+1;i<edge_count+size;i++)
+        {
+            if(adj[min][vertices[i].index] && adj[min][vertices[i].index]<vertices[i].weight)
+            {
+                node_parent[vertices[i].index]=min;
+                vertices[i].weight=adj[min][vertices[i].index];
+            }
+        }
+
+        size--;
+
+    }
+
+    printf("Final MST:\n");
+    for(i=1;i<nodes;i++)
+    {
+        printf("Edge %d - %d  Weight %d\n",i,node_parent[i],adj[i][node_parent[i]]);
+    }
+    return 0;
+}
