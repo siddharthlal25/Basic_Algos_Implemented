@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define INF 214748364
+
+/*
+Authored by,
+Siddharth Lal
+*/
+
+int minimum(int node_weight[],int nodes,int node_visited[])
+{
+    int min=INF,min_index,i;
+    for(i=1;i<=nodes;i++)
+    {
+        if(node_visited[i]==0 && node_weight[i]<min)
+        {
+            min=node_weight[i];
+            min_index=i;
+        }
+    }
+    return min_index;
+}
+
+
+int main()
+{
+    int nodes,edges;
+    printf("Enter number of vertices in graph:");
+    scanf("%d",&nodes);
+    printf("Enter the number of edges in graph:");
+    scanf("%d",&edges);
+    printf("Nodes are numbered from 1 to %d\n\n",nodes);
+    int i,j,adj[nodes+1][nodes+1];
+    //initializing adjacency list to zero
+    for(i=1;i<=nodes;i++)
+        for(j=1;j<=nodes;j++)
+            adj[i][j]=0;
+
+    //generating the adjacency list
+    int w,v1,v2;
+    for(i=0;i<edges;i++)
+    {
+        printf("Enter first vertex of the edge in graph:");
+        scanf("%d",&v1);
+        printf("Enter second vertex of the edge in graph:");
+        scanf("%d",&v2);
+        printf("Enter the weight of edge:");
+        scanf("%d",&w);
+        adj[v1][v2]=w;
+        adj[v2][v1]=w;
+    }
+    int node_parent[nodes+1];
+    int node_weight[nodes+1];
+    int node_visited[nodes+1];
+
+    for(i=1;i<=nodes;i++)
+    {
+        node_weight[i]=INF;
+        node_visited[i]=0;
+    }
+
+    node_parent[1]=-1;
+    node_weight[1]=0;
+
+    int edge_count;
+    for(edge_count=1;edge_count<=nodes-1;edge_count++)
+    {
+        int min=minimum(node_weight,nodes,node_visited);
+        node_visited[min]=1;
+
+        for(i=1;i<=nodes;i++)
+        {
+            if(adj[min][i] && node_visited[i]==0 && adj[min][i]<node_weight[i])
+            {
+                node_parent[i]=min;
+                node_weight[i]=adj[min][i];
+            }
+        }
+    }
+    printf("Final MST:\n");
+    for(i=2;i<=nodes;i++)
+    {
+        printf("Edge %d - %d  Weight %d\n",i,node_parent[i],adj[i][node_parent[i]]);
+    }
+    return 0;
+}
+
