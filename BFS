@@ -1,0 +1,139 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define INF 99999999
+#define NIL -1
+/*
+Authored by
+Siddharth Lal
+*/
+
+//Implementation of bfs using FIFo queue's
+typedef struct node
+{
+    int data;
+    struct node* next;
+}node;
+
+typedef struct queue
+{
+    struct node* head;
+    struct node* rear;
+}queue;
+
+void enqueue(queue* a,int data)
+{
+    node* temp=(node*)malloc(sizeof(node));
+    temp->data=data;
+    temp->next=NULL;
+    if((*a).head==NULL)
+    {
+        (*a).rear=temp;
+        (*a).head=(*a).rear;
+        return;
+    }
+    ((*a).rear)->next=temp;
+    (*a).rear=temp;
+}
+
+void dequeue(queue* a)
+{
+    if((*a).head==NULL)
+        return;
+    if((*a).head==(*a).rear)
+    {
+        (*a).head=NULL;
+        (*a).rear=NULL;
+        return;
+    }
+
+    node* temp=(*a).head;
+    temp=temp->next;
+    (*a).head=temp;
+}
+//a=q.head
+
+void print(queue q)
+{
+    node* temp=q.head;
+    while(temp!=NULL)
+    {
+        printf("%d ",temp->data);
+        temp=temp->next;
+    }
+    printf("\n");
+}
+
+int main()
+{
+    int nodes,edges;
+    printf("Enter number of vertices in graph:");
+    scanf("%d",&nodes);
+    printf("Enter the number of edges in graph:");
+    scanf("%d",&edges);
+    printf("\n\n***Nodes are numbered from 0 to %d***\n\n",nodes-1);
+    int i,j,adj[nodes][nodes];
+    //initializing adjacency list to zero
+    for(i=0;i<nodes;i++)
+        for(j=0;j<nodes;j++)
+            adj[i][j]=0;
+
+    //generating the adjacency list
+    int w,v1,v2;
+    for(i=0;i<edges;i++)
+    {
+        printf("Enter first vertex of the edge in graph:");
+        scanf("%d",&v1);
+        printf("Enter second vertex of the edge in graph:");
+        scanf("%d",&v2);
+        printf("\n");
+        adj[v1][v2]=1;
+        adj[v2][v1]=1;
+    }
+
+    //color 0-white 1-gray 2-black
+    queue a;
+    a.head=NULL;
+    a.rear=NULL;
+    int d[nodes],parent[nodes],color[nodes];
+    for(i=0;i<nodes;i++)
+    {
+        color[i]=0;
+        d[i]=INF;
+        parent[i]=NIL;
+    }
+    int start;
+    printf("Enter the node form where you want bfs to begin(0-%d):",nodes-1);
+    scanf("%d",&start);
+
+    color[start]=1;
+    d[start]=0;
+    parent[start]=NIL;
+    enqueue(&a,start);
+    while(a.head!=NULL)
+    {
+        int i,head=(a.head)->data;
+        for(i=0;i<nodes;i++)
+        {
+            if(adj[head][i])
+            {
+                if(color[i]==0)
+                {
+                    color[i]=1;
+                    d[i]=d[head]+1;
+                    parent[i]=head;
+                    enqueue(&a,i);
+                }
+            }
+        }
+        dequeue(&a);
+        color[head]=2;
+    }
+    printf("The visited nodes will have color 2.\n");
+    printf("The nodes which are not visited will have color 0.\n");
+    printf("Node\tColor\n");
+    for(i=0;i<nodes;i++)
+    {
+        printf("%d\t%d\n ",i,color[i]);
+    }
+    return 0;
+}
