@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define INF 99999999
+#define NIL -1
+/*
+Authored By
+Siddharth Lal
+*/
+
+int main()
+{
+    int nodes,edges;
+    printf("Enter number of vertices in graph:");
+    scanf("%d",&nodes);
+    printf("Enter the number of edges in graph:");
+    scanf("%d",&edges);
+    printf("Nodes are numbered from 1 to %d\n\n",nodes);
+    int i,j,adj[nodes+1][nodes+1];
+    //initializing adjacency list to zero
+    for(i=1;i<=nodes;i++)
+        for(j=1;j<=nodes;j++)
+            adj[i][j]=0;
+
+    //generating the adjacency list
+    int w,v1,v2;
+    for(i=0;i<edges;i++)
+    {
+        printf("Enter first vertex of the edge in graph:");
+        scanf("%d",&v1);
+        printf("Enter second vertex of the edge in graph:");
+        scanf("%d",&v2);
+        printf("Enter the weight of edge:");
+        scanf("%d",&w);
+        adj[v1][v2]=w;
+        adj[v2][v1]=w;
+    }
+
+    int d[nodes],parent[nodes],start;
+    for(i=0;i<nodes;i++)
+    {
+        d[i]=INF;
+        parent[i]=NIL;
+    }
+    printf("Enter the node from where to start Dijkstra's(0-%d):",nodes-1);
+    scanf("%d",&start);
+    d[start]=0;
+    int node_visited[nodes];
+    int count=nodes;
+    for(i=0;i<nodes;i++)
+        node_visited[i]=0;
+    while(count)
+    {
+        int min=INF,index;
+        for(i=0;i<nodes;i++)
+        {
+            if(node_visited[i]==0)
+            {
+                if(min>d[i])
+                {
+                    min=d[i];
+                    index=i;
+                }
+            }
+        }
+
+        node_visited[index]=1;
+        for(i=0;i<nodes;i++)
+        {
+            if(node_visited[i]==0 && adj[index][i] && d[i]>d[index]+adj[i][index])
+            {
+                    d[i]=d[index]+adj[i][index];
+                    parent[i]=index;
+            }
+        }
+        count--;
+    }
+    printf("Distance of all nodes from %d-node:\n",start);
+    printf("Node\tDistance\n");
+    for(i=0;i<nodes;i++)
+    {
+        if(i!=start)
+        {
+            printf("%d\t%d\n",i,d[i]);
+        }
+    }
+    return 0;
+}
