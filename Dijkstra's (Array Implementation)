@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #define INF 99999999
 #define NIL -1
+//Enter weights less than INF or else change INF accordingly(Keeping in mind integer overflow)
 /*
 Authored By
 Siddharth Lal
