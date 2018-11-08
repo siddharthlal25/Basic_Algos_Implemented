@@ -50,7 +50,6 @@ void dequeue(queue* a)
     temp=temp->next;
     (*a).head=temp;
 }
-//a=q.head
 
 void print(queue q)
 {
