@@ -1,0 +1,74 @@
+#include <bits/stdc++.h>
+#define pb  push_back
+
+using namespace std;
+typedef long long int ll;
+typedef vector< int > vi;
+typedef vector< vi > vvi;
+
+vvi adj;
+vi d,v;
+
+void dfs(int x)
+{
+    int i;
+    v[x]=true;
+    for(i=0;i<adj[x].size();i++)
+    {
+        int y=adj[x][i];
+        if(v[y]==false)
+        {
+            d[y]=d[x]+1;
+            dfs(y);
+        }
+    }
+}
+
+int main()
+{
+    int n,i;
+    cout<<"Enter the number of vertices in tree"<<endl;
+    cin>>n;
+    cout<<"Now enter the edge as v1 v2"<<endl;
+
+    d.clear();
+    d.resize(n+1,0);
+    v.clear();
+    v.resize(n+1,false);
+    adj.clear();
+    adj.resize(n+1);
+
+    for(i=0;i<n-1;i++)
+    {
+        int x,y;
+        cin>>x>>y;
+        adj[x].pb(y);
+        adj[y].pb(x);
+    }
+    dfs(1);
+    int max1=d[1],index=1;
+    for(i=1;i<=n;i++)
+    {
+        if(max1<d[i])
+        {
+            index=i;
+            max1=d[i];
+        }
+    }
+    d.clear();
+    d.resize(n+1,0);
+    v.clear();
+    v.resize(n+1,false);
+    dfs(index);
+    max1=d[1],index=1;
+    for(i=1;i<=n;i++)
+    {
+        if(max1<d[i])
+        {
+            index=i;
+            max1=d[i];
+        }
+    }
+    cout<<"Magnitude of diameter:"<<max1<<endl;
+    return 0;
+}
